@@ -20,9 +20,9 @@ runs:
     - name: Install latest stable
       uses: actions-rs/toolchain@v1
       with:
+        profile: minimal
         toolchain: stable
         default: true
-        components: rustfmt, clippy
     - name: Install Xtensa toolchain
       shell: bash
       run: |
