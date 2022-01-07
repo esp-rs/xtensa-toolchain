@@ -1,6 +1,7 @@
 # `xtensa-toolchain` Action
 
 ![MIT/Apache-2.0 licensed](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)
+![CI](https://github.com/esp-rs/xtensa-toolchain/workflows/CI/badge.svg)
 
 An action which installs the Rust compiler fork with Xtensa support, as well as the required toolchain binaries.
 

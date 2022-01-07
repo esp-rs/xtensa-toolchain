@@ -1,0 +1,18 @@
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+
+name: CI
+
+jobs:
+  check-targets:
+    name: Check targets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          default: true
+      - run: rustc --print target-list | grep xtensa
