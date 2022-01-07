@@ -1,0 +1,27 @@
+name: Rust Toolchain for Xtensa
+description: Install the Rust compiler fork targeting Xtensa devices
+author: esp-rs
+
+branding:
+  icon: play-circle
+  color: red
+
+inputs:
+  default:
+    description: Set installed toolchain as default
+    default: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install latest stable
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        default: true
+        components: rustfmt, clippy
+    - name: Install Xtensa toolchain
+      shell: bash
+      run: |
+        ${{ github.action_path }}/install.sh
+        [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
