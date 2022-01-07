@@ -2,17 +2,43 @@
 
 set -e
 
+
+RE_VERSION="^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$"
+
+function check_version_formatting() {
+  if [[ ! "${1}" =~ $RE_VERSION ]];
+  then
+    echo "ERROR: version number is not correctly formatted: ${1}"
+    exit 1
+  fi
+}
+
+
 # Download and execute the installation script from the esp-rs/rust-build
 # repository: https://github.com/esp-rs/rust-build
 #
 # This installs not only the Rust compiler fork with support for the Xtensa
 # architecture but also the required Xtensa toolchain binaries. We save the
 # required exports to a file for later processing, to handle around some
-# weirdness with GitHub runners (see below for details).
+# weirdness with GitHub runners (see below for details). If a version number
+# formatted following semver is provided, attempt to install that version of
+# the compiler. If no version was specified, or 'latest' was provided, do not
+# specify the toolchain version.
 
 curl -LO https://raw.githubusercontent.com/esp-rs/rust-build/main/install-rust-toolchain.sh
 chmod +x ./install-rust-toolchain.sh
-./install-rust-toolchain.sh --export-file "$HOME/exports"
+
+version="${1:-latest}"
+case $version in
+  latest)
+    ./install-rust-toolchain.sh --export-file "$HOME/exports"
+    ;;
+
+  *)
+    check_version_formatting "$version"
+    ./install-rust-toolchain.sh --export-file "$HOME/exports" --toolchain-version "$version"
+    ;;
+esac
 
 
 # With the required exports specified by the rust-build installation script

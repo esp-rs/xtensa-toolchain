@@ -10,6 +10,9 @@ inputs:
   default:
     description: Set installed toolchain as default
     default: false
+  version:
+    description: Which version of the toolchain to install
+    default: latest
 
 runs:
   using: composite
@@ -23,5 +26,5 @@ runs:
     - name: Install Xtensa toolchain
       shell: bash
       run: |
-        ${{ github.action_path }}/install.sh
+        ${{ github.action_path }}/install.sh ${{ inputs.version }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true

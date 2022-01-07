@@ -29,6 +29,7 @@ jobs:
         uses: esp-rs/xtensa-toolchain@v1
         with:
           default: true
+          version: "1.57.0.2"
 
       # `cargo check` command here will use installed `esp` toolchain, as it
       # is set as the default
@@ -41,9 +42,15 @@ jobs:
 
 ## Inputs
 
-| Name      |                  Description                   | Type | Default |
-| --------- | :--------------------------------------------: | ---- | ------- |
-| `default` | Set installed toolchain as a default toolchain | bool | false   |
+|   Name    |                  Description                   |  Type  | Default  |
+| :-------: | :--------------------------------------------: | :----: | :------: |
+| `default` | Set installed toolchain as a default toolchain |  bool  |  false   |
+| `version` |   Which version of the toolchain to install    | string | _latest_ |
+
+All inputs are optional; if no inputs are provided:
+
+- the Rust compiler fork with Xtensa support will **NOT** be set as the default (but is accessible via the `+esp` toolchain specifier)
+- the latest available version of the compiler will be installed
 
 ## License
 
