@@ -25,18 +25,24 @@ function check_version_formatting() {
 # the compiler. If no version was specified, or 'latest' was provided, do not
 # specify the toolchain version.
 
+crates="${1:-}"
+version="${2:-latest}"
+
 curl -LO https://raw.githubusercontent.com/esp-rs/rust-build/main/install-rust-toolchain.sh
 chmod +x ./install-rust-toolchain.sh
 
-version="${1:-latest}"
+function install_rust_toolchain() {
+  ./install-rust-toolchain.sh --export-file "$HOME/exports" --extra-crates "$crates" "@"
+}
+
 case $version in
   latest)
-    ./install-rust-toolchain.sh --export-file "$HOME/exports"
+    install_rust_toolchain
     ;;
 
   *)
     check_version_formatting "$version"
-    ./install-rust-toolchain.sh --export-file "$HOME/exports" --toolchain-version "$version"
+    install_rust_toolchain --toolchain-version "$version"
     ;;
 esac
 

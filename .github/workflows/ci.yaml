@@ -15,4 +15,5 @@ jobs:
       - uses: ./
         with:
           default: true
+          ldproxy: false
       - run: rustc --print target-list | grep xtensa

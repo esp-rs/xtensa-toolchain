@@ -13,6 +13,9 @@ inputs:
   version:
     description: Which version of the toolchain to install
     default: latest
+  ldproxy:
+    description: Whether to install ldproxy (required for `std`)
+    default: true
 
 runs:
   using: composite
@@ -26,5 +29,6 @@ runs:
     - name: Install Xtensa toolchain
       shell: bash
       run: |
-        ${{ github.action_path }}/install.sh ${{ inputs.version }}
+        [[ "${{ inputs.ldproxy }}" = true ]] && crates="ldproxy" || crates=""
+        ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
