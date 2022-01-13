@@ -1,13 +1,11 @@
 # `xtensa-toolchain` Action
 
-![MIT/Apache-2.0 licensed](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)
 ![CI](https://github.com/esp-rs/xtensa-toolchain/workflows/CI/badge.svg)
+![MIT/Apache-2.0 licensed](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)
 
 An action which installs the Rust compiler fork with Xtensa support, as well as the required toolchain binaries.
 
-The Rust compiler fork with Xtensa support can be found at [esp-rs/rust], and pre-built binaries with installation scripts can be found at [esp-rs/rust-build].
-
-This action uses the pre-built binaries and installation script from [esp-rs/rust-build].
+The Rust compiler fork with Xtensa support can be found at [esp-rs/rust]. Pre-built binaries with installation scripts can be found at [esp-rs/rust-build], which is what this action uses.
 
 [esp-rs/rust]: https://github.com/esp-rs/rust
 [esp-rs/rust-build]: https://github.com/esp-rs/rust
@@ -17,7 +15,7 @@ This action uses the pre-built binaries and installation script from [esp-rs/rus
 ```yaml
 on: [push]
 
-name: build
+name: CI
 
 jobs:
   check:
@@ -30,9 +28,10 @@ jobs:
         with:
           default: true
           version: "1.57.0.2"
+          ldproxy: true
 
       # `cargo check` command here will use installed `esp` toolchain, as it
-      # is set as the default
+      # has been set as the default above
 
       - name: Run cargo check
         uses: actions-rs/cargo@v1
@@ -44,13 +43,13 @@ jobs:
 
 |   Name    |                    Description                    |  Type  | Default  |
 | :-------: | :-----------------------------------------------: | :----: | :------: |
-| `default` |  Set installed toolchain as a default toolchain   |  bool  |  false   |
+| `default` |  Set installed toolchain as a default toolchain   |  bool  | `false`  |
 | `version` |     Which version of the toolchain to install     | string | _latest_ |
-| `ldproxy` | Whether to install `ldproxy` (required for `std`) |  bool  |   true   |
+| `ldproxy` | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
 
 All inputs are optional; if no inputs are provided:
 
-- the Rust compiler fork with Xtensa support will **NOT** be set as the default (but is accessible via the `+esp` toolchain specifier)
+- the Rust compiler fork with Xtensa support will **NOT** be set as the default (but is usable via the `+esp` toolchain specifier)
 - the latest available version of the compiler will be installed
 - [ldproxy](https://github.com/ivmarkov/embuild) **WILL** be installed; this is required for `std`, however installing it significantly increases the total run time of this action
 
