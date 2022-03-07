@@ -25,10 +25,11 @@ runs:
       with:
         profile: minimal
         toolchain: stable
-        default: true
+        override: true
     - name: Install Xtensa toolchain
       shell: bash
       run: |
         [[ "${{ inputs.ldproxy }}" = true ]] && crates="ldproxy" || crates=""
         ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
+        rustup override unset
