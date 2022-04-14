@@ -24,10 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust for Xtensa
-        uses: esp-rs/xtensa-toolchain@v1
+        uses: esp-rs/xtensa-toolchain@v1.1
         with:
           default: true
-          version: "1.57.0.2"
+          version: "1.60.0"
           ldproxy: true
 
       # `cargo check` command here will use installed `esp` toolchain, as it
