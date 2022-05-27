@@ -10,6 +10,9 @@ inputs:
   default:
     description: Set installed toolchain as default
     default: false
+  buildtargets:
+    description: Comma separated list of targets
+    default: all
   version:
     description: Which version of the toolchain to install
     default: latest
@@ -30,6 +33,6 @@ runs:
       shell: bash
       run: |
         [[ "${{ inputs.ldproxy }}" = true ]] && crates="ldproxy" || crates=""
-        ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }}
+        ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }} ${{ inputs.buildtargets }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         rustup override unset

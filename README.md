@@ -41,15 +41,17 @@ jobs:
 
 ## Inputs
 
-|   Name    |                    Description                    |  Type  | Default  |
-| :-------: | :-----------------------------------------------: | :----: | :------: |
-| `default` |  Set installed toolchain as a default toolchain   |  bool  | `false`  |
-| `version` |     Which version of the toolchain to install     | string | _latest_ |
-| `ldproxy` | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
+|   Name         |                    Description                    |  Type  | Default  |
+| :-------:      | :-----------------------------------------------: | :----: | :------: |
+| `default`      | Set installed toolchain as a default toolchain    |  bool  | `false`  |
+| `buildtargets` | Comma separated list of targets                   |  bool  | `all`    |
+| `version`      | Which version of the toolchain to install         | string | _latest_ |
+| `ldproxy`      | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
 
 All inputs are optional; if no inputs are provided:
 
 - the Rust compiler fork with Xtensa support will **NOT** be set as the default (but is usable via the `+esp` toolchain specifier)
+- all available build targets will be installed
 - the latest available version of the compiler will be installed
 - [ldproxy](https://github.com/ivmarkov/embuild) **WILL** be installed; this is required for `std`, however installing it significantly increases the total run time of this action
 

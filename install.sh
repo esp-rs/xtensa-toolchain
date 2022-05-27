@@ -27,6 +27,7 @@ function check_version_formatting() {
 
 crates="${1:-}"
 version="${2:-latest}"
+buildtargets="${3:-all}"
 
 curl -LO https://raw.githubusercontent.com/esp-rs/rust-build/main/install-rust-toolchain.sh
 chmod +x ./install-rust-toolchain.sh
@@ -42,7 +43,7 @@ case $version in
 
   *)
     check_version_formatting "$version"
-    install_rust_toolchain --toolchain-version "$version"
+    install_rust_toolchain --toolchain-version "$version" --build-target "${buildtargets}"
     ;;
 esac
 
