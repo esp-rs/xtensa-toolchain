@@ -17,3 +17,5 @@ jobs:
           default: true
           ldproxy: false
       - run: rustc --print target-list | grep xtensa
+      - run: env | grep LIBCLANG_PATH
+      - run: xtensa-esp32-elf-gcc --version
