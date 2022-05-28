@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -eu
 
 
 RE_VERSION="^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$"
@@ -56,3 +56,4 @@ esac
 #shellcheck source=/dev/null
 source "$HOME/exports"
 echo "$PATH" >> "$GITHUB_PATH"
+echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >> "$GITHUB_ENV"
