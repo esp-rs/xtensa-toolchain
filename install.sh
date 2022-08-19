@@ -3,7 +3,7 @@
 set -eu
 
 
-RE_VERSION="^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$"
+RE_VERSION="^[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?$"
 
 function check_version_formatting() {
   if [[ ! "${1}" =~ $RE_VERSION ]];
@@ -11,6 +11,31 @@ function check_version_formatting() {
     echo "ERROR: version number is not correctly formatted: ${1}"
     exit 1
   fi
+}
+
+function format_version() {
+  ver=$1
+
+  # The number of iterations to perform is 3 (the maximum occurences of '.' in
+  # a version string) minus the number of occurences of '.' already present in
+  # the version string.
+  res=${ver//[^.]}
+  iters=$((3 - ${#res}))
+
+  # Append '.0' to the version string $iters number of times to create a
+  # version string which matches the release tags.
+  for ((i = 0; i < iters; i++));
+  do
+    ver="${ver}.0"
+  done
+
+  echo "$ver"
+}
+
+function latest_version() {
+  curl -s https://api.github.com/repos/esp-rs/rust-build/releases \
+    | jq -r "map(select(.prerelease | not)) | map(.tag_name) | first" \
+    | sed -e "s/^v//"
 }
 
 
@@ -21,22 +46,37 @@ function check_version_formatting() {
 # architecture but also the required Xtensa toolchain binaries. We save the
 # required exports to a file for later processing, to handle around some
 # weirdness with GitHub runners (see below for details). If a version number
-# formatted following semver is provided, attempt to install that version of
-# the compiler. If no version was specified, or 'latest' was provided, do not
-# specify the toolchain version.
+# formatted following (our extended version of) semver is provided, attempt to
+# install that version of the compiler.
 
 crates="${1:-}"
 version="${2:-latest}"
 buildtargets="${3:-all}"
 
+case $version in
+  latest)
+    version=$(latest_version)
+    ;;
+
+  *)
+    version=$(format_version "$version")
+    ;;
+esac
+
+check_version_formatting "$version"
+
 curl \
-  -L https://raw.githubusercontent.com/esp-rs/rust-build/main/install-rust-toolchain.sh \
+  -L "https://github.com/esp-rs/rust-build/releases/download/v$version/install-rust-toolchain.sh" \
   -o "$HOME/install-rust-toolchain.sh"
 
 chmod +x "$HOME/install-rust-toolchain.sh"
 
 function install_rust_toolchain() {
-  "$HOME/install-rust-toolchain.sh" --export-file "$HOME/exports" --extra-crates "$crates" "@"
+  "$HOME/install-rust-toolchain.sh" \
+    --export-file "$HOME/exports" \
+    --extra-crates "$crates" \
+    --build-target "${buildtargets}" \
+    "@"
 }
 
 case $version in
@@ -45,8 +85,7 @@ case $version in
     ;;
 
   *)
-    check_version_formatting "$version"
-    install_rust_toolchain --toolchain-version "$version" --build-target "${buildtargets}"
+    install_rust_toolchain --toolchain-version "$version"
     ;;
 esac
 
