@@ -29,11 +29,14 @@ crates="${1:-}"
 version="${2:-latest}"
 buildtargets="${3:-all}"
 
-curl -LO https://raw.githubusercontent.com/esp-rs/rust-build/main/install-rust-toolchain.sh
-chmod +x ./install-rust-toolchain.sh
+curl \
+  -L https://raw.githubusercontent.com/esp-rs/rust-build/main/install-rust-toolchain.sh \
+  -o "$HOME/install-rust-toolchain.sh"
+
+chmod +x "$HOME/install-rust-toolchain.sh"
 
 function install_rust_toolchain() {
-  ./install-rust-toolchain.sh --export-file "$HOME/exports" --extra-crates "$crates" "@"
+  "$HOME/install-rust-toolchain.sh" --export-file "$HOME/exports" --extra-crates "$crates" "@"
 }
 
 case $version in
