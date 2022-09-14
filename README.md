@@ -24,10 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust for Xtensa
-        uses: esp-rs/xtensa-toolchain@v1.1
+        uses: esp-rs/xtensa-toolchain@v1.3
         with:
           default: true
-          version: "1.60.0"
+          version: "1.63.0"
           ldproxy: true
 
       # `cargo check` command here will use installed `esp` toolchain, as it
@@ -41,12 +41,12 @@ jobs:
 
 ## Inputs
 
-|   Name         |                    Description                    |  Type  | Default  |
-| :-------:      | :-----------------------------------------------: | :----: | :------: |
-| `default`      | Set installed toolchain as a default toolchain    |  bool  | `false`  |
-| `buildtargets` | Comma separated list of targets                   |  bool  | `all`    |
-| `version`      | Which version of the toolchain to install         | string | _latest_ |
-| `ldproxy`      | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
+|      Name      |                    Description                    |  Type  | Default  |
+| :------------: | :-----------------------------------------------: | :----: | :------: |
+|   `default`    |  Set installed toolchain as a default toolchain   |  bool  | `false`  |
+| `buildtargets` |          Comma separated list of targets          | string |  _all_   |
+|   `version`    |     Which version of the toolchain to install     | string | _latest_ |
+|   `ldproxy`    | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
 
 All inputs are optional; if no inputs are provided:
 
