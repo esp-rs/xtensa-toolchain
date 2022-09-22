@@ -19,6 +19,9 @@ inputs:
   ldproxy:
     description: Whether to install ldproxy (required for `std`)
     default: true
+  override:
+    description: Whether to override the toolchain
+    default: true
 
 runs:
   using: composite
@@ -28,11 +31,11 @@ runs:
       with:
         profile: minimal
         toolchain: stable
-        override: true
+        override: ${{ inputs.override }}
     - name: Install Xtensa toolchain
       shell: bash
       run: |
         [[ "${{ inputs.ldproxy }}" = true ]] && crates="ldproxy" || crates=""
         ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }} ${{ inputs.buildtargets }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
-        rustup override unset
+        [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
