@@ -19,6 +19,9 @@ inputs:
   ldproxy:
     description: Whether to install ldproxy (required for `std`)
     default: true
+  unsetoverride:
+    description: Whether to unset previous overrides
+    default: true
 
 runs:
   using: composite
@@ -35,4 +38,4 @@ runs:
         [[ "${{ inputs.ldproxy }}" = true ]] && crates="ldproxy" || crates=""
         ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }} ${{ inputs.buildtargets }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
-        rustup override unset
+        [[ "${{ inputs.unsetoverride }}" = true ]] && rustup override unset || true
