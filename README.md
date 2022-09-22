@@ -47,6 +47,8 @@ jobs:
 | `buildtargets` |          Comma separated list of targets          | string |  _all_   |
 |   `version`    |     Which version of the toolchain to install     | string | _latest_ |
 |   `ldproxy`    | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
+|   `override`   |          Overrides the installed toolchain        |  bool  |  `true`  |
+
 
 All inputs are optional; if no inputs are provided:
 
