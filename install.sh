@@ -46,12 +46,12 @@ if [[ -n "${version}" ]]; then
     --export-file "$HOME/exports" \
     --toolchain-version "$version" \
     --extra-crates "$crates" \
-    --build-target "${buildtargets}"
+    --targets "${buildtargets}"
 else
   "$HOME/espup" install \
     --export-file "$HOME/exports" \
     --extra-crates "$crates" \
-    --build-target "${buildtargets}"
+    --targets "${buildtargets}"
 fi
 
 # With the required exports specified by the rust-build installation script
