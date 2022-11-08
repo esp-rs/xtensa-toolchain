@@ -31,7 +31,7 @@ function format_version() {
 # install that version of the compiler.
 
 crates="${1:-}"
-version="${2-}"
+version="${2:-}"
 buildtargets="${3:-all}"
 
 curl \
@@ -40,19 +40,18 @@ curl \
 
 chmod a+x "$HOME/espup"
 
-if [[ -n "${version}" ]]; then
+args="-l debug --export-file $HOME/exports --targets ${buildtargets}"
+
+if [[ "${version}" != "" ]]; then
   version=$(format_version "$version")
-  "$HOME/espup" install \
-    --export-file "$HOME/exports" \
-    --toolchain-version "$version" \
-    --extra-crates "$crates" \
-    --targets "${buildtargets}"
-else
-  "$HOME/espup" install \
-    --export-file "$HOME/exports" \
-    --extra-crates "$crates" \
-    --targets "${buildtargets}"
+  args="$args  --toolchain-version $version"
 fi
+
+if [[ "${crates}" != "" ]]; then
+  args="$args  --extra-crates $crates"
+fi
+
+$HOME/espup install $args
 
 # With the required exports specified by the rust-build installation script
 # saved to a file, we can simply `source` it to export said variables. GitHub
