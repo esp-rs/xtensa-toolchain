@@ -14,8 +14,8 @@ inputs:
     description: Comma separated list of targets
     default: all
   version:
-    description: Which version of the toolchain to install
-    default: latest
+    description: Which version of the toolchain to install in the form of '<major>.<minor>.<patch>.<subpatch>'. If no version is provided, 'latest' available version will be used
+    required: false
   ldproxy:
     description: Whether to install ldproxy (required for `std`)
     default: true
