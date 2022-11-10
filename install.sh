@@ -42,7 +42,7 @@ chmod a+x "$HOME/espup"
 
 args="-l debug --export-file $HOME/exports --targets ${buildtargets}"
 
-if [[ "${version}" != "" ]]; then
+if [[ "${version}" != "latest" ]]; then
   version=$(format_version "$version")
   args="$args  --toolchain-version $version"
 fi
