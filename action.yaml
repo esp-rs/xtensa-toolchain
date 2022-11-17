@@ -30,7 +30,7 @@ runs:
       with:
         tool: espup
     - uses: taiki-e/install-action@v1
-      if: inputs.ldproxy == true
+      if: inputs.ldproxy
       with:
         tool: ldproxy
     - name: Install Xtensa toolchain
