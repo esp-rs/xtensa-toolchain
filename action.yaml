@@ -26,16 +26,20 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install latest stable
-      uses: actions-rs/toolchain@v1
+    - uses: taiki-e/install-action@v1
       with:
-        profile: minimal
-        toolchain: stable
-        override: ${{ inputs.override }}
+        tool: espup
+    - uses: taiki-e/install-action@v1
+      if: inputs.ldproxy == true
+      with:
+        tool: ldproxy
     - name: Install Xtensa toolchain
       shell: bash
       run: |
-        [[ "${{ inputs.ldproxy }}" = true ]] && crates="ldproxy" || crates=""
-        ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }} ${{ inputs.buildtargets }}
+        [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
+        espup install -l debug --targets ${{ inputs.buildtargets }} $version
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
+        source "$HOME/export-esp.sh"
+        echo "$PATH" >>"$GITHUB_PATH"
+        echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >>"$GITHUB_ENV"
