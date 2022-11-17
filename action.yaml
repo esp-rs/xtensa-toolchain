@@ -26,15 +26,13 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions-rs/install@v0.1
+    - uses: taiki-e/install-action@v1
       with:
-        crate: espup
-        version: latest
-    - uses: actions-rs/install@v0.1
+        tool: espup
+    - uses: taiki-e/install-action@v1
       if: inputs.ldproxy == true
       with:
-        crate: ldproxy
-        version: latest
+        tool: ldproxy
     - name: Install Xtensa toolchain
       shell: bash
       run: |
