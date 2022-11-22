@@ -35,7 +35,7 @@ runs:
         else
           sudo curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu -o $HOME/.cargo/bin/espup
         fi
-        chmod a+x $HOME/.cargo/bin/espup
+        sudo chmod u+x $HOME/.cargo/bin/espup
     - name: Install ldproxy
       if: inputs.ldproxy
       shell: bash
@@ -46,8 +46,8 @@ runs:
         else
           sudo curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
         fi
-        unzip "$HOME/.cargo/bin/ldproxy.zip" -d "$HOME/.cargo/bin/"
-        chmod a+x $HOME/.cargo/bin/ldproxy
+        sudo unzip "$HOME/.cargo/bin/ldproxy.zip" -d "$HOME/.cargo/bin/"
+        sudo chmod u+x $HOME/.cargo/bin/ldproxy
     - name: Install Xtensa toolchain
       shell: bash
       run: |
