@@ -40,7 +40,6 @@ runs:
       if: inputs.ldproxy
       shell: bash
       run: |
-        sudo apt-get install unzip
         if dpkg --print-architecture | grep -q 'arm'; then
           sudo curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-aarch64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
         else
@@ -52,7 +51,7 @@ runs:
       shell: bash
       run: |
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
-        espup install -l debug --targets ${{ inputs.buildtargets }} $version
+        $HOME/.cargo/bin/espup install -l debug --targets ${{ inputs.buildtargets }} $version
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
         source "$HOME/export-esp.sh"
