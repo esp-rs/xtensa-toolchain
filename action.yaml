@@ -51,7 +51,7 @@ runs:
       shell: bash
       run: |
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
-        $HOME/.cargo/bin/espup install -l debug --targets ${{ inputs.buildtargets }} $version
+        sudo $HOME/.cargo/bin/espup install -l debug --targets ${{ inputs.buildtargets }} $version
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
         source "$HOME/export-esp.sh"
