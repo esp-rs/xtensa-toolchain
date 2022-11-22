@@ -25,14 +25,29 @@ inputs:
 
 runs:
   using: composite
+
   steps:
-    - uses: taiki-e/install-action@v1
-      with:
-        tool: espup
-    - uses: taiki-e/install-action@v1
+    - name: Install espup
+      shell: bash
+      run: |
+        if dpkg --print-architecture | grep -q 'arm'; then
+          sudo curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-aarch64-unknown-linux-gnu -o $HOME/.cargo/bin/espup
+        else
+          sudo curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu -o $HOME/.cargo/bin/espup
+        fi
+        chmod a+x $HOME/.cargo/bin/espup
+    - name: Install ldproxy
       if: inputs.ldproxy
-      with:
-        tool: ldproxy
+      shell: bash
+      run: |
+        sudo apt-get install unzip
+        if dpkg --print-architecture | grep -q 'arm'; then
+          sudo curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-aarch64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
+        else
+          sudo curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
+        fi
+        unzip "$HOME/.cargo/bin/ldproxy.zip" -d "$HOME/.cargo/bin/"
+        chmod a+x $HOME/.cargo/bin/ldproxy
     - name: Install Xtensa toolchain
       shell: bash
       run: |
