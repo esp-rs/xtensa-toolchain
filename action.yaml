@@ -30,21 +30,13 @@ runs:
     - name: Install espup
       shell: bash
       run: |
-        if dpkg --print-architecture | grep -q 'arm'; then
-          sudo curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-aarch64-unknown-linux-gnu -o $HOME/.cargo/bin/espup
-        else
-          sudo curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu -o $HOME/.cargo/bin/espup
-        fi
+        sudo curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu -o $HOME/.cargo/bin/espup
         sudo chmod u+x $HOME/.cargo/bin/espup
     - name: Install ldproxy
       if: inputs.ldproxy
       shell: bash
       run: |
-        if dpkg --print-architecture | grep -q 'arm'; then
-          sudo curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-aarch64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
-        else
-          sudo curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
-        fi
+        sudo curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
         sudo unzip "$HOME/.cargo/bin/ldproxy.zip" -d "$HOME/.cargo/bin/"
         sudo chmod u+x $HOME/.cargo/bin/ldproxy
     - name: Install Xtensa toolchain
@@ -54,6 +46,6 @@ runs:
         sudo $HOME/.cargo/bin/espup install -l debug --targets ${{ inputs.buildtargets }} $version
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
-        source "$HOME/export-esp.sh"
+        . /root/export-esp.sh
         echo "$PATH" >>"$GITHUB_PATH"
         echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >>"$GITHUB_ENV"
