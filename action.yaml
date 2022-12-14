@@ -46,6 +46,7 @@ runs:
         sudo $HOME/.cargo/bin/espup install -l debug --targets ${{ inputs.buildtargets }} $version
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
-        . /root/export-esp.sh
+        . $HOME/export-esp.sh
+        echo "LIBCLANG_PATH=${LIBCLANG_PATH}"
         echo "$PATH" >>"$GITHUB_PATH"
         echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >>"$GITHUB_ENV"
