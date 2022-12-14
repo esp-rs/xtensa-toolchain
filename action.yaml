@@ -44,9 +44,9 @@ runs:
       run: |
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         sudo $HOME/.cargo/bin/espup install -l debug --targets ${{ inputs.buildtargets }} $version
+        . $HOME/export-esp.sh
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
-        . $HOME/export-esp.sh
         echo "LIBCLANG_PATH=${LIBCLANG_PATH}"
         echo "$PATH" >>"$GITHUB_PATH"
         echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >>"$GITHUB_ENV"
