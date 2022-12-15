@@ -26,16 +26,21 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install latest stable
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: ${{ inputs.override }}
-    - name: Install Xtensa toolchain
+    - name: Install ldproxy
+      if: inputs.ldproxy
       shell: bash
       run: |
-        [[ "${{ inputs.ldproxy }}" = true ]] && crates="ldproxy" || crates=""
-        ${{ github.action_path }}/install.sh "$crates" ${{ inputs.version }} ${{ inputs.buildtargets }}
+        curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
+        unzip "$HOME/.cargo/bin/ldproxy.zip" -d "$HOME/.cargo/bin/"
+        chmod a+x $HOME/.cargo/bin/ldproxy
+    - name: Install espup
+      shell: bash
+      run: |
+        curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu  -o $HOME/.cargo/bin/espup
+        chmod a+x $HOME/.cargo/bin/espup
+    - name: Install Xtensa toolchain
+      shell: bash -ileo pipefail {0}
+      run: |
+        ${{ github.action_path }}/install.sh ${{ inputs.buildtargets }} ${{ inputs.version }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
