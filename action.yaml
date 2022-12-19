@@ -39,8 +39,8 @@ runs:
         curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu  -o $HOME/.cargo/bin/espup
         chmod a+x $HOME/.cargo/bin/espup
     - name: Install Xtensa toolchain
-      shell: bash -ileo pipefail {0}
+      shell: bash
       run: |
-        ${{ github.action_path }}/install.sh ${{ inputs.buildtargets }} ${{ inputs.version }}
+        bash ${{ github.action_path }}/install.sh ${{ inputs.buildtargets }} ${{ inputs.version }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
