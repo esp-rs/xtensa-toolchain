@@ -41,10 +41,6 @@ runs:
     - name: Install Xtensa toolchain
       shell: bash -ileo pipefail {0}
       run: |
-        [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
-        $HOME/.cargo/bin/espup install -l debug --export-file $HOME/exports --targets ${{ inputs.buildtargets }} $version
-        source "$HOME/exports"
-        echo "$PATH" >>"$GITHUB_PATH"
-        echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >>"$GITHUB_ENV"
+        ${{ github.action_path }}/install.sh ${{ inputs.buildtargets }} ${{ inputs.version }}
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
