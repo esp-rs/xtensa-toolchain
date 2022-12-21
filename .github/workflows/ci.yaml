@@ -1,14 +1,14 @@
+name: CI
+
 on:
   pull_request:
     branches:
       - main
   push:
 
-name: CI
-
 jobs:
-  check-targets:
-    name: Check targets
+  check-environment:
+    name: Check environmnent
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,3 +20,27 @@ jobs:
       - run: rustc --print target-list | grep xtensa
       - run: env | grep LIBCLANG_PATH
       - run: xtensa-esp32-elf-gcc --version
+      - run: xtensa-esp32s2-elf-gcc --version
+      - run: xtensa-esp32s3-elf-gcc --version
+      - run: riscv32-esp-elf-gcc --version
+
+  check-arguments:
+    name: Check `buildtarget`, `version`, `override` and `ldproxy` arguments
+    runs-on: ubuntu-latest
+    steps:
+      - run: rustup update stable && rustup default stable
+      - uses: actions/checkout@v2
+      - uses: ./
+        name: Install Xtensa Rust
+        with:
+          override: false
+          ldproxy: true
+          buildtargets: esp32,esp32c3
+          version: 1.64.0.0
+      - run: rustc +esp --print target-list | grep xtensa
+      - run: env | grep LIBCLANG_PATH
+      - run: xtensa-esp32-elf-gcc --version
+      - run: riscv32-esp-elf-gcc --version
+      - run: ls $HOME/.cargo/bin/ldproxy | grep ldproxy
+      - run: cargo +esp --version | grep 1.64.0
+      - run: rustup default | grep stable
