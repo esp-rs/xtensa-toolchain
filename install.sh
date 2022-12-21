@@ -57,7 +57,7 @@ check_version_formatting "$version"
 # formatted following (our extended version of) semver is provided, attempt to
 # install that version of the compiler.
 
-$HOME/.cargo/bin/espup install -l debug --export-file $HOME/exports --targets ${buildtargets} --toolchain-version $version
+$HOME/.cargo/bin/espup install -l debug --profile-minimal --export-file $HOME/exports --targets ${buildtargets} --toolchain-version $version
 
 # With the required exports specified by the rust-build installation script
 # saved to a file, we can simply `source` it to export said variables. GitHub
