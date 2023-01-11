@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust for Xtensa
-        uses: esp-rs/xtensa-toolchain@v1.3
+        uses: esp-rs/xtensa-toolchain@v1.5
         with:
           default: true
           version: "1.66.0"
