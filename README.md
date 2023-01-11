@@ -41,8 +41,8 @@ jobs:
         with:
           command: check
 ```
-> `GITHUB_TOKEN` environment variable needs to be [defined in the action], otherwise, the workflow can fail some times,
-see [#15] for more details.
+> `GITHUB_TOKEN` environment variable needs to be [defined in the action], otherwise, the workflow may fail some times,
+see [#15] for details.
 
 [defined in the action]: https://docs.github.com/en/actions/learn-github-actions/variables
 [#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
