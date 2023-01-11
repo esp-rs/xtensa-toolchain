@@ -41,12 +41,6 @@ jobs:
         with:
           command: check
 ```
-> **Note**
-> `GITHUB_TOKEN` environment variable needs to be [defined in the action], otherwise, the workflow may fail some times,
-see [#15] for details.
-
-[defined in the action]: https://docs.github.com/en/actions/learn-github-actions/variables
-[#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
 
 ## Inputs
 
@@ -65,6 +59,19 @@ All inputs are optional; if no inputs are provided:
 - all available build targets will be installed
 - the latest available version of the compiler will be installed
 - [ldproxy](https://github.com/ivmarkov/embuild) **WILL** be installed; this is required for `std`
+
+## Environment
+
+This action uses [`espup`], which calls GitHub API a few times during the installation process.
+[GitHub API has a small rate limit] for non-authenticated users, this can lead to transient errors. See [#15] for details.
+
+So, we recommend [defining] `GITHUB_TOKEN`, as seen in the [example workflow], which increases the rate limit to 1000.
+
+[`espup`]: https://github.com/esp-rs/espup
+[GitHub API has a small rate limit]: https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limits-for-requests-from-github-actions
+[#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
+[defining]: https://docs.github.com/en/actions/learn-github-actions/variables
+[example workflow]: #example-workflow
 
 ## License
 
