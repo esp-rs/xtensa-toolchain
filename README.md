@@ -17,6 +17,9 @@ on: [push]
 
 name: CI
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   check:
     name: Rust project
@@ -27,7 +30,7 @@ jobs:
         uses: esp-rs/xtensa-toolchain@v1.3
         with:
           default: true
-          version: "1.63.0"
+          version: "1.66.0"
           ldproxy: true
 
       # `cargo check` command here will use installed `esp` toolchain, as it
@@ -38,6 +41,11 @@ jobs:
         with:
           command: check
 ```
+> `GITHUB_TOKEN` environment variable needs to be [defined in the action], otherwise, the workflow can fail some times,
+see [#15] for more details.
+
+[defined in the action]: https://docs.github.com/en/actions/learn-github-actions/variables
+[#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
 
 ## Inputs
 
