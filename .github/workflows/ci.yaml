@@ -6,6 +6,9 @@ on:
       - main
   push:
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   check-environment:
     name: Check environmnent
