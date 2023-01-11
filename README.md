@@ -1,22 +1,25 @@
 # `xtensa-toolchain` Action
 
-![CI](https://github.com/esp-rs/xtensa-toolchain/workflows/CI/badge.svg)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/esp-rs/xtensa-toolchain/ci.yaml?label=CI&logo=github&style=flat-square)
 ![MIT/Apache-2.0 licensed](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)
 
 An action which installs the Rust compiler fork with Xtensa support, as well as the required toolchain binaries.
 
-The Rust compiler fork with Xtensa support can be found at [esp-rs/rust]. Pre-built binaries with installation scripts can be found at [esp-rs/rust-build], which is what this action uses.
+The Rust compiler fork with Xtensa support can be found at [esp-rs/rust]. Pre-built binaries can be found at [esp-rs/rust-build], and we install these using [esp-rs/espup].
 
 [esp-rs/rust]: https://github.com/esp-rs/rust
 [esp-rs/rust-build]: https://github.com/esp-rs/rust
+[esp-rs/espup]: https://github.com/esp-rs/espup
 
 ## Example workflow
 
 ```yaml
-on: [push]
-
 name: CI
 
+on: [push]
+
+# Since `espup` queries the GitHub API, we strongly recommend you provide this
+# action with an API token to avoid transient errors.
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -25,7 +28,7 @@ jobs:
     name: Rust project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Rust for Xtensa
         uses: esp-rs/xtensa-toolchain@v1.5
         with:
@@ -44,6 +47,8 @@ jobs:
 
 ## Inputs
 
+This action can be configured in various ways using its inputs:
+
 |      Name      |                    Description                    |  Type  | Default  |
 | :------------: | :-----------------------------------------------: | :----: | :------: |
 |   `default`    |  Set installed toolchain as a default toolchain   |  bool  | `false`  |
@@ -52,23 +57,22 @@ jobs:
 |   `ldproxy`    | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
 |   `override`   |         Overrides the installed toolchain         |  bool  |  `true`  |
 
-
 All inputs are optional; if no inputs are provided:
 
 - the Rust compiler fork with Xtensa support will **NOT** be set as the default (but is usable via the `+esp` toolchain specifier)
 - all available build targets will be installed
 - the latest available version of the compiler will be installed
 - [ldproxy](https://github.com/ivmarkov/embuild) **WILL** be installed; this is required for `std`
+- the Rust compiler fork with Xtensa support **WILL** be set as the override toolchain
 
 ## Environment
 
-This action uses [`espup`], which calls GitHub API a few times during the installation process.
-[GitHub API has a small rate limit] for non-authenticated users, this can lead to transient errors. See [#15] for details.
+This action uses [espup], which calls GitHub API during the installation process. [GitHub API has a low rate limit] for non-authenticated users, and this can lead to transient errors. See [#15] for details.
 
 So, we recommend [defining] `GITHUB_TOKEN`, as seen in the [example workflow], which increases the rate limit to 1000.
 
-[`espup`]: https://github.com/esp-rs/espup
-[GitHub API has a small rate limit]: https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limits-for-requests-from-github-actions
+[espup]: https://github.com/esp-rs/espup
+[github api has a small rate limit]: https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limits-for-requests-from-github-actions
 [#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
 [defining]: https://docs.github.com/en/actions/learn-github-actions/variables
 [example workflow]: #example-workflow
