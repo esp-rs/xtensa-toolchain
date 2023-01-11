@@ -17,6 +17,9 @@ on: [push]
 
 name: CI
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   check:
     name: Rust project
@@ -24,10 +27,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust for Xtensa
-        uses: esp-rs/xtensa-toolchain@v1.3
+        uses: esp-rs/xtensa-toolchain@v1.5
         with:
           default: true
-          version: "1.63.0"
+          version: "1.66.0"
           ldproxy: true
 
       # `cargo check` command here will use installed `esp` toolchain, as it
@@ -56,6 +59,19 @@ All inputs are optional; if no inputs are provided:
 - all available build targets will be installed
 - the latest available version of the compiler will be installed
 - [ldproxy](https://github.com/ivmarkov/embuild) **WILL** be installed; this is required for `std`
+
+## Environment
+
+This action uses [`espup`], which calls GitHub API a few times during the installation process.
+[GitHub API has a small rate limit] for non-authenticated users, this can lead to transient errors. See [#15] for details.
+
+So, we recommend [defining] `GITHUB_TOKEN`, as seen in the [example workflow], which increases the rate limit to 1000.
+
+[`espup`]: https://github.com/esp-rs/espup
+[GitHub API has a small rate limit]: https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limits-for-requests-from-github-actions
+[#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
+[defining]: https://docs.github.com/en/actions/learn-github-actions/variables
+[example workflow]: #example-workflow
 
 ## License
 
