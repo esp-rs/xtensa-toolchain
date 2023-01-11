@@ -41,6 +41,7 @@ jobs:
         with:
           command: check
 ```
+> **Note**
 > `GITHUB_TOKEN` environment variable needs to be [defined in the action], otherwise, the workflow may fail some times,
 see [#15] for details.
 
