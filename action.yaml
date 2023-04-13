@@ -27,7 +27,7 @@ runs:
   using: composite
   steps:
     - name: Install ldproxy
-      if: inputs.ldproxy
+      if: inputs.ldproxy == 'true'
       shell: bash
       run: |
         curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
