@@ -40,9 +40,7 @@ jobs:
       # has been set as the default above
 
       - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
+        run: cargo check
 ```
 
 ## Inputs
