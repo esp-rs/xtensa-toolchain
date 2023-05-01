@@ -8,7 +8,7 @@ An action which installs the Rust compiler fork with Xtensa support, as well as 
 The Rust compiler fork with Xtensa support can be found at [esp-rs/rust]. Pre-built binaries can be found at [esp-rs/rust-build], and we install these using [esp-rs/espup].
 
 [esp-rs/rust]: https://github.com/esp-rs/rust
-[esp-rs/rust-build]: https://github.com/esp-rs/rust
+[esp-rs/rust-build]: https://github.com/esp-rs/rust-build
 [esp-rs/espup]: https://github.com/esp-rs/espup
 
 ## Example workflow
