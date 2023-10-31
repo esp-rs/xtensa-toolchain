@@ -26,25 +26,35 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Ensure that Rust is already installed
+      shell: bash
+      run: |
+        if [ ! -d "$HOME/.cargo/bin" ]; then
+          curl https://sh.rustup.rs -sSf | sh -s -- --profile minimal -y
+        fi
+
     - name: Install ldproxy
       if: inputs.ldproxy == 'true'
       shell: bash
       run: |
-        curl -L https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip -o $HOME/.cargo/bin/ldproxy.zip
-        unzip "$HOME/.cargo/bin/ldproxy.zip" -d "$HOME/.cargo/bin/"
-        chmod a+x $HOME/.cargo/bin/ldproxy
+        curl -LO https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip
+        unzip ldproxy-x86_64-unknown-linux-gnu.zip -d "$HOME/.cargo/bin"
+        chmod a+x "$HOME/.cargo/bin/ldproxy"
+
     - name: Install espup
       shell: bash
       run: |
-        curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu  -o $HOME/.cargo/bin/espup
-        chmod a+x $HOME/.cargo/bin/espup
+        curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu -o "$HOME/.cargo/bin/espup"
+        chmod a+x "$HOME/.cargo/bin/espup"
+
     - name: Install Xtensa toolchain
       shell: bash
       run: |
+        source "$HOME/.cargo/env"
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
-        $HOME/.cargo/bin/espup install -l debug --export-file $HOME/exports --targets ${{ inputs.buildtargets }} $version
+        "$HOME/.cargo/bin/espup" install -l debug --export-file $HOME/exports --targets ${{ inputs.buildtargets }} $version
         source "$HOME/exports"
-        echo "$PATH" >>"$GITHUB_PATH"
-        echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >>"$GITHUB_ENV"
+        echo "$PATH" >> "$GITHUB_PATH"
+        echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >> "$GITHUB_ENV"
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
