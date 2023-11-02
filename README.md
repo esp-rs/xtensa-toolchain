@@ -70,7 +70,7 @@ This action uses [espup], which calls GitHub API during the installation process
 So, we recommend [defining] `GITHUB_TOKEN`, as seen in the [example workflow], which increases the rate limit to 1000.
 
 [espup]: https://github.com/esp-rs/espup
-[github api has a small rate limit]: https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limits-for-requests-from-github-actions
+[GitHub API has a low rate limit]: https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limits-for-requests-from-github-actions
 [#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
 [defining]: https://docs.github.com/en/actions/learn-github-actions/variables
 [example workflow]: #example-workflow
