@@ -38,7 +38,7 @@ runs:
       shell: bash
       run: |
         curl -LO https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip
-        unzip ldproxy-x86_64-unknown-linux-gnu.zip -d "$HOME/.cargo/bin"
+        unzip -o ldproxy-x86_64-unknown-linux-gnu.zip -d "$HOME/.cargo/bin"
         chmod a+x "$HOME/.cargo/bin/ldproxy"
 
     - name: Install espup
