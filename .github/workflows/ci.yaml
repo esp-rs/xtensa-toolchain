@@ -25,7 +25,6 @@ jobs:
       - run: xtensa-esp32-elf-gcc --version
       - run: xtensa-esp32s2-elf-gcc --version
       - run: xtensa-esp32s3-elf-gcc --version
-      - run: riscv32-esp-elf-gcc --version
 
   check-arguments:
     name: Check `buildtarget`, `version`, `override` and `ldproxy` arguments
@@ -43,7 +42,6 @@ jobs:
       - run: rustc +esp --print target-list | grep xtensa
       - run: env | grep LIBCLANG_PATH
       - run: xtensa-esp32-elf-gcc --version
-      - run: riscv32-esp-elf-gcc --version
       - run: ls $HOME/.cargo/bin/ldproxy | grep ldproxy
       - run: cargo +esp --version | grep 1.64.0
       - run: rustup default | grep stable
