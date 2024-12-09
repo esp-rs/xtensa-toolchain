@@ -79,10 +79,10 @@ So, we recommend [defining] `GITHUB_TOKEN`, as seen in the [example workflow], w
 
 [act] is a tool which can be used to run GitHub workflows locally, using Docker. It is possible to use the `xtensa-toolchain` action with [act]; however, due to the fact that [espup] queries the GitHub API, it is necessary to set the `GITHUB_TOKEN` environment variable in order to do so.
 
-For more information please see the [`GITHUB_TOKEN`] section of the `README` for [act].
+For more information please see the [`GITHUB_TOKEN`] section of the User Guide for [act].
 
 [act]: https://github.com/nektos/act
-[`GITHUB_TOKEN`]: https://github.com/nektos/act#github_token
+[`GITHUB_TOKEN`]: https://nektosact.com/usage/index.html?#github_token
 
 ## License
 
