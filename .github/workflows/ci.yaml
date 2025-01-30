@@ -46,3 +46,17 @@ jobs:
       - run: ls $HOME/.cargo/bin/ldproxy | grep ldproxy
       - run: cargo +esp --version | grep 1.64.0
       - run: rustup default | grep stable
+
+  check-host-targets:
+    name: Check host | ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+         os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: rustup update stable && rustup default stable
+      - uses: actions/checkout@v3
+      - uses: ./
+        name: Install Xtensa Rust
+      - run: rustc +esp --print target-list | grep xtensa
