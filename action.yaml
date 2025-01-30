@@ -13,6 +13,9 @@ inputs:
   buildtargets:
     description: Comma separated list of targets
     default: all
+  host_target:
+    description: Host machine target triple
+    default: x86_64-unknown-linux-gnu
   version:
     description: Which version of the toolchain to install
     default: latest
@@ -37,14 +40,14 @@ runs:
       if: inputs.ldproxy == 'true'
       shell: bash
       run: |
-        curl -LO https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip
-        unzip -o ldproxy-x86_64-unknown-linux-gnu.zip -d "$HOME/.cargo/bin"
+        curl -LO https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-${{ inputs.host_target }}.zip
+        unzip -o ldproxy-${{ inputs.host_target }}.zip -d "$HOME/.cargo/bin"
         chmod a+x "$HOME/.cargo/bin/ldproxy"
 
     - name: Install espup
       shell: bash
       run: |
-        curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu -o "$HOME/.cargo/bin/espup"
+        curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-${{ inputs.host_target }} -o "$HOME/.cargo/bin/espup"
         chmod a+x "$HOME/.cargo/bin/espup"
 
     - name: Install Xtensa toolchain

@@ -46,3 +46,24 @@ jobs:
       - run: ls $HOME/.cargo/bin/ldproxy | grep ldproxy
       - run: cargo +esp --version | grep 1.64.0
       - run: rustup default | grep stable
+
+  check-host-targets:
+    name: Check `host_target` (${{ matrix.os.target_triple }})
+    strategy:
+      fail-fast: false
+      matrix:
+         os:
+          - runner: window-latest
+            target_triple: x86_64-pc-windows-msvc
+          - runner: macos-latest
+            target_triple: x86_64-apple-darwin
+    runs-on: ${{ matrix.os.runner }}
+    steps:
+      - run: rustup update stable && rustup default stable
+      - uses: actions/checkout@v3
+      - uses: ./
+        name: Install Xtensa Rust
+        with:
+          host_target: ${{ matrix.os.target_triple }}
+      - run: rustc +esp --print target-list | grep xtensa
+
