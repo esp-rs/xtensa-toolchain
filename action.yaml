@@ -33,21 +33,29 @@ runs:
           curl https://sh.rustup.rs -sSf | sh -s -- --profile minimal -y
         fi
 
+    - name: Detect host target triple
+      shell: bash
+      run: |
+        export HOST_TARGET=$(rustup show | grep "Default host" | sed -e 's/.* //')
+        echo "HOST_TARGET=$HOST_TARGET" >> $GITHUB_ENV
+
     - name: Install ldproxy
       if: inputs.ldproxy == 'true'
       shell: bash
       run: |
-        curl -LO https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-x86_64-unknown-linux-gnu.zip
-        unzip -o ldproxy-x86_64-unknown-linux-gnu.zip -d "$HOME/.cargo/bin"
-        chmod a+x "$HOME/.cargo/bin/ldproxy"
+        curl -LO https://github.com/esp-rs/embuild/releases/latest/download/ldproxy-${{ env.HOST_TARGET }}.zip
+        unzip -o ldproxy-${{ env.HOST_TARGET }}.zip -d "$HOME/.cargo/bin"
+        chmod +x "$HOME/.cargo/bin/ldproxy"*
 
     - name: Install espup
       shell: bash
       run: |
-        curl -L https://github.com/esp-rs/espup/releases/latest/download/espup-x86_64-unknown-linux-gnu -o "$HOME/.cargo/bin/espup"
-        chmod a+x "$HOME/.cargo/bin/espup"
+        curl -LO https://github.com/esp-rs/espup/releases/latest/download/espup-${{ env.HOST_TARGET }}.zip
+        unzip -o espup-${{ env.HOST_TARGET }}.zip -d "$HOME/.cargo/bin"
+        chmod +x "$HOME/.cargo/bin/espup"*
 
-    - name: Install Xtensa toolchain
+    - name: Install Xtensa toolchain (Linux, macOS)
+      if: env.HOST_TARGET != 'x86_64-pc-windows-msvc'
       shell: bash
       run: |
         source "$HOME/.cargo/env"
@@ -56,5 +64,16 @@ runs:
         source "$HOME/exports"
         echo "$PATH" >> "$GITHUB_PATH"
         echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >> "$GITHUB_ENV"
+
+    - name: Install Xtensa toolchain (Windows)
+      if: env.HOST_TARGET == 'x86_64-pc-windows-msvc'
+      shell: bash
+      run: |
+        [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
+        "$HOME/.cargo/bin/espup.exe" install -l debug --export-file $HOME/exports --targets ${{ inputs.buildtargets }} $version
+
+    - name: Set default and override
+      shell: bash
+      run: |
         [[ "${{ inputs.default }}" = true ]] && rustup default esp || true
         [[ "${{ inputs.override }}" = true ]] && rustup override unset || true
