@@ -29,8 +29,10 @@ runs:
     - name: Ensure that Rust is already installed
       shell: bash
       run: |
-        if [ ! -d "$HOME/.cargo/bin" ]; then
+        if ! command -v rustup &> /dev/null; then
           curl https://sh.rustup.rs -sSf | sh -s -- --profile minimal -y
+          export PATH="$HOME/.cargo/bin:$PATH"
+          echo "PATH=$PATH" >> $GITHUB_ENV
         fi
 
     - name: Detect host target triple
