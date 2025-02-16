@@ -66,7 +66,7 @@ runs:
         "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $version
         source "$HOME/exports"
         echo "$PATH" >> "$GITHUB_PATH"
-        echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >> "$GITHUB_ENV"
+        [[ "${{ inputs.override }}" = true ]] && echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >> "$GITHUB_ENV" || true
 
     - name: Install Xtensa toolchain (Windows)
       if: env.HOST_TARGET == 'x86_64-pc-windows-msvc'
