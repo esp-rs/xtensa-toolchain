@@ -22,6 +22,9 @@ inputs:
   override:
     description: Whether to override the toolchain
     default: true
+  export:
+    description: Whether to export the `${ESPUP_EXPORT_FILE}` into the GitHub environment
+    default: true
 
 runs:
   using: composite
@@ -65,8 +68,10 @@ runs:
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $version
         source "$HOME/exports"
-        echo "$PATH" >> "$GITHUB_PATH"
-        echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >> "$GITHUB_ENV"
+        if [[ "${{ inputs.export }}" = true ]]; then
+            echo "$PATH" >> "$GITHUB_PATH"
+            echo "LIBCLANG_PATH=${LIBCLANG_PATH}" >> "$GITHUB_ENV"
+        fi
 
     - name: Install Xtensa toolchain (Windows)
       if: env.HOST_TARGET == 'x86_64-pc-windows-msvc'

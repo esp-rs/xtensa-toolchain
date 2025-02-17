@@ -54,6 +54,7 @@ This action can be configured in various ways using its inputs:
 |   `version`    |     Which version of the toolchain to install     | string | _latest_ |
 |   `ldproxy`    | Whether to install `ldproxy` (required for `std`) |  bool  |  `true`  |
 |   `override`   |         Overrides the installed toolchain         |  bool  |  `true`  |
+|    `export`    |           Sources `${ESPUP_EXPORT_FILE}`          |  bool  |  `true`  |
 
 All inputs are optional; if no inputs are provided:
 
