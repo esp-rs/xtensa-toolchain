@@ -12,7 +12,7 @@ inputs:
     default: false
   buildtargets:
     description: Comma separated list of targets
-    default: all
+    default: esp32,esp32s2,esp32s3
   version:
     description: Which version of the toolchain to install
     default: latest
