@@ -25,6 +25,9 @@ inputs:
   export:
     description: Whether to export the `${ESPUP_EXPORT_FILE}` into the GitHub environment
     default: true
+  extended-llvm:
+    description: Install the whole LLVM instead of only installing the libs
+    default: false
 
 runs:
   using: composite
@@ -66,7 +69,8 @@ runs:
       run: |
         source "$HOME/.cargo/env"
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
-        "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $version
+        [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
+        "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version
         source "$HOME/exports"
         if [[ "${{ inputs.export }}" = true ]]; then
             echo "$PATH" >> "$GITHUB_PATH"
@@ -78,7 +82,8 @@ runs:
       shell: bash
       run: |
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
-        "$HOME/.cargo/bin/espup.exe" install -l debug --targets ${{ inputs.buildtargets }} $version
+        [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
+        "$HOME/.cargo/bin/espup.exe" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version
 
     - name: Set default and override
       shell: bash
