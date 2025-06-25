@@ -15,7 +15,7 @@ jobs:
     name: Check environmnent
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         name: Install Xtensa Rust
         with:
@@ -28,11 +28,11 @@ jobs:
       - run: xtensa-esp32s3-elf-gcc --version
 
   check-arguments:
-    name: Check `buildtarget`, `version`, `override` and `ldproxy` arguments
+    name: Check `buildtarget`, `version`, `override`, `ldproxy`, and `extended-llvm` arguments
     runs-on: ubuntu-latest
     steps:
       - run: rustup update stable && rustup default stable
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         name: Install Xtensa Rust
         with:
@@ -40,23 +40,25 @@ jobs:
           ldproxy: true
           buildtargets: esp32,esp32c3
           version: 1.64.0.0
+          extended-llvm: true
       - run: rustc +esp --print target-list | grep xtensa
       - run: env | grep LIBCLANG_PATH
       - run: xtensa-esp32-elf-gcc --version
       - run: ls $HOME/.cargo/bin/ldproxy | grep ldproxy
       - run: cargo +esp --version | grep 1.64.0
       - run: rustup default | grep stable
+      - run: $CLANG_PATH --version | grep -i espressif
 
   check-host-targets:
     name: Check host | ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-         os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - run: rustup update stable && rustup default stable
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         name: Install Xtensa Rust
       - run: rustc +esp --print target-list | grep xtensa
