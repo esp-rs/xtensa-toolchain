@@ -47,15 +47,16 @@ jobs:
 
 This action can be configured in various ways using its inputs:
 
-|      Name       |                        Description                         |  Type  | Default  |
-| :-------------: | :--------------------------------------------------------: | :----: | :------: |
-|    `default`    |       Set installed toolchain as a default toolchain       |  bool  | `false`  |
-| `buildtargets`  |              Comma separated list of targets               | string |  _all_   |
-|    `version`    |         Which version of the toolchain to install          | string | _latest_ |
-|    `ldproxy`    |     Whether to install `ldproxy` (required for `std`)      |  bool  |  `true`  |
-|   `override`    |             Overrides the installed toolchain              |  bool  |  `true`  |
-|    `export`     |               Sources `${ESPUP_EXPORT_FILE}`               |  bool  |  `true`  |
-| `extended-llvm` | Install the whole LLVM instead of only installing the libs |  bool  | `false`  |
+|      Name       |                        Description                         |  Type  |         Default         |
+| :-------------: | :--------------------------------------------------------: | :----: | :---------------------: |
+|    `default`    |       Set installed toolchain as a default toolchain       |  bool  |         `false`         |
+| `buildtargets`  |              Comma separated list of targets               | string | _esp32,esp32s2,esp32s3_ |
+|    `version`    |         Which version of the toolchain to install          | string |        _latest_         |
+|    `ldproxy`    |     Whether to install `ldproxy` (required for `std`)      |  bool  |         `true`          |
+|   `override`    |             Overrides the installed toolchain              |  bool  |         `true`          |
+|    `export`     |               Sources `${ESPUP_EXPORT_FILE}`               |  bool  |         `true`          |
+| `extended-llvm` | Install the whole LLVM instead of only installing the libs |  bool  |         `false`         |
+|     `name`      |                 Xtensa Rust toolchain name                 | string |          _esp_          |
 
 All inputs are optional; if no inputs are provided:
 
