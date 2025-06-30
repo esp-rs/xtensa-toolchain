@@ -28,6 +28,9 @@ inputs:
   extended-llvm:
     description: Install the whole LLVM instead of only installing the libs
     default: false
+  name:
+    description: Xtensa Rust toolchain name
+    default: esp
 
 runs:
   using: composite
@@ -70,7 +73,8 @@ runs:
         source "$HOME/.cargo/env"
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
-        "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version
+        [[ "${{ inputs.name }}" != esp ]] && name="--name ${{ inputs.name }}" || name=""
+        "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version $name
         source "$HOME/exports"
         if [[ "${{ inputs.export }}" = true ]]; then
             echo "$PATH" >> "$GITHUB_PATH"
@@ -84,7 +88,8 @@ runs:
       run: |
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
-        "$HOME/.cargo/bin/espup.exe" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version
+        [[ "${{ inputs.name }}" != esp ]] && name="--name ${{ inputs.name }}" || name=""
+        "$HOME/.cargo/bin/espup.exe" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version $name
 
     - name: Set default and override
       shell: bash
