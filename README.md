@@ -52,7 +52,7 @@ This action can be configured in various ways using its inputs:
 |    `default`    |       Set installed toolchain as a default toolchain       |  bool  |         `false`         |
 | `buildtargets`  |              Comma separated list of targets               | string | _esp32,esp32s2,esp32s3_ |
 |    `version`    |         Which version of the toolchain to install          | string |        _latest_         |
-|    `ldproxy`    |     Whether to install `ldproxy` (required for `std`)      |  bool  |         `true`          |
+|    `ldproxy`    |     Whether to install `ldproxy` (required for `std`)      |  bool  |         `false`         |
 |   `override`    |             Overrides the installed toolchain              |  bool  |         `true`          |
 |    `export`     |               Sources `${ESPUP_EXPORT_FILE}`               |  bool  |         `true`          |
 | `extended-llvm` | Install the whole LLVM instead of only installing the libs |  bool  |         `false`         |

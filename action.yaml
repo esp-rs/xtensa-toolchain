@@ -18,7 +18,7 @@ inputs:
     default: latest
   ldproxy:
     description: Whether to install ldproxy (required for `std`)
-    default: true
+    default: false
   override:
     description: Whether to override the toolchain
     default: true
