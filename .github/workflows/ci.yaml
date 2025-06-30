@@ -28,7 +28,7 @@ jobs:
       - run: xtensa-esp32s3-elf-gcc --version
 
   check-arguments:
-    name: Check `buildtarget`, `version`, `override`, `ldproxy`, and `extended-llvm` arguments
+    name: Check `buildtarget`, `version`, `override`, `ldproxy`, `name`,and `extended-llvm` arguments
     runs-on: ubuntu-latest
     steps:
       - run: rustup update stable && rustup default stable
@@ -41,11 +41,12 @@ jobs:
           buildtargets: esp32,esp32c3
           version: 1.64.0.0
           extended-llvm: true
-      - run: rustc +esp --print target-list | grep xtensa
+          name: xtensa
+      - run: rustc +xtensa --print target-list | grep xtensa
       - run: env | grep LIBCLANG_PATH
       - run: xtensa-esp32-elf-gcc --version
       - run: ls $HOME/.cargo/bin/ldproxy | grep ldproxy
-      - run: cargo +esp --version | grep 1.64.0
+      - run: cargo +xtensa --version | grep 1.64.0
       - run: rustup default | grep stable
       - run: $CLANG_PATH --version | grep -i espressif
 
