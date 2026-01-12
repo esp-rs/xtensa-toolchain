@@ -9,7 +9,7 @@ branding:
 inputs:
   default:
     description: Set installed toolchain as default
-    default: false
+    default: "false"
   buildtargets:
     description: Comma separated list of targets
     default: esp32,esp32s2,esp32s3
@@ -18,16 +18,16 @@ inputs:
     default: latest
   ldproxy:
     description: Whether to install ldproxy (required for `std`)
-    default: false
+    default: "false"
   override:
     description: Whether to override the toolchain
-    default: true
+    default: "true"
   export:
     description: Whether to export the `${ESPUP_EXPORT_FILE}` into the GitHub environment
-    default: true
+    default: "true"
   extended-llvm:
     description: Install the whole LLVM instead of only installing the libs
-    default: false
+    default: "false"
   name:
     description: Xtensa Rust toolchain name
     default: esp
