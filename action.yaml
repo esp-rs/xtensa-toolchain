@@ -9,7 +9,7 @@ branding:
 inputs:
   default:
     description: Set installed toolchain as default
-    default: false
+    default: "false"
   buildtargets:
     description: Comma separated list of targets
     default: esp32,esp32s2,esp32s3
@@ -18,19 +18,22 @@ inputs:
     default: latest
   ldproxy:
     description: Whether to install ldproxy (required for `std`)
-    default: false
+    default: "false"
   override:
     description: Whether to override the toolchain
-    default: true
+    default: "true"
   export:
     description: Whether to export the `${ESPUP_EXPORT_FILE}` into the GitHub environment
-    default: true
+    default: "true"
   extended-llvm:
     description: Install the whole LLVM instead of only installing the libs
-    default: false
+    default: "false"
   name:
     description: Xtensa Rust toolchain name
     default: esp
+  esp-riscv-gcc:
+    description: Install Espressif RISC-V toolchain built with croostool-ng
+    default: "false"
 
 runs:
   using: composite
@@ -74,7 +77,8 @@ runs:
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
         [[ "${{ inputs.name }}" != esp ]] && name="--name ${{ inputs.name }}" || name=""
-        "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version $name
+        [[ "${{ inputs.esp-riscv-gcc }}" = true ]] && esp_riscv_gcc="-r" || esp_riscv_gcc=""
+        "$HOME/.cargo/bin/espup" install -l debug --targets ${{ inputs.buildtargets }} $esp_riscv_gcc $extended_llvm $version $name
         source "$HOME/exports"
         if [[ "${{ inputs.export }}" = true ]]; then
             echo "$PATH" >> "$GITHUB_PATH"
@@ -89,7 +93,8 @@ runs:
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
         [[ "${{ inputs.name }}" != esp ]] && name="--name ${{ inputs.name }}" || name=""
-        "$HOME/.cargo/bin/espup.exe" install -l debug --targets ${{ inputs.buildtargets }} $extended_llvm $version $name
+        [[ "${{ inputs.esp-riscv-gcc }}" = true ]] && esp_riscv_gcc="-r" || esp_riscv_gcc=""
+        "$HOME/.cargo/bin/espup.exe" install -l debug --targets ${{ inputs.buildtargets }} $esp_riscv_gcc $extended_llvm $version $name
 
     - name: Set default and override
       shell: bash
