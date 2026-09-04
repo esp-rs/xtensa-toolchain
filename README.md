@@ -57,6 +57,7 @@ This action can be configured in various ways using its inputs:
 |    `export`     |               Sources `${ESPUP_EXPORT_FILE}`               |  bool  |         `true`          |
 | `extended-llvm` | Install the whole LLVM instead of only installing the libs |  bool  |         `false`         |
 |     `name`      |                 Xtensa Rust toolchain name                 | string |          _esp_          |
+| `github-token`  |        Token used by `espup` to query the GitHub API       | string |  `${{ github.token }}`  | 
 
 All inputs are optional; if no inputs are provided:
 
@@ -78,7 +79,22 @@ So, we recommend [defining] `GITHUB_TOKEN`, as seen in the [example workflow], w
 [defining]: https://docs.github.com/en/actions/learn-github-actions/variables
 [example workflow]: #example-workflow
 
-## Use with [act]
+### Third-party runners (Forgejo, Gitea)
+
+These runners inject their own `GITHUB_TOKEN` into every step, including the steps inside a composite action, which overrides any value set at the workflow, job, or step level.
+That token is not valid for `api.github.com`, so `espup` fails with `401 Unauthorized`.
+Pass a GitHub token through the `github-token` input instead:
+
+```yaml
+- name: Install Rust for Xtensa
+  uses: esp-rs/xtensa-toolchain@v1
+  with:
+    github-token: ${{ secrets.GH_API_TOKEN }}
+    default: true
+    buildtargets: esp32s3
+```
+
+### Use with [act]
 
 [act] is a tool which can be used to run GitHub workflows locally, using Docker. It is possible to use the `xtensa-toolchain` action with [act]; however, due to the fact that [espup] queries the GitHub API, it is necessary to set the `GITHUB_TOKEN` environment variable in order to do so.
 
