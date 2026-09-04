@@ -7,9 +7,6 @@ on:
   push:
   workflow_dispatch:
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   check-environment:
     name: Check environmnent
@@ -49,6 +46,48 @@ jobs:
       - run: cargo +xtensa --version | grep 1.64.0
       - run: rustup default | grep stable
       - run: $CLANG_PATH --version | grep -i espressif
+
+  check-github-token:
+    name: Check `github-token` | ${{ matrix.token.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # `espup` answers a bad credential with `401 Unauthorized` and fails, so
+        # whether the install succeeds tells us which token was actually used.
+        token:
+          - name: input overrides GITHUB_TOKEN
+            use-input: true
+            env: invalid-token-used-on-purpose
+            expected: success
+          - name: GITHUB_TOKEN used when input is empty
+            use-input: false
+            env: invalid-token-used-on-purpose
+            expected: failure
+          - name: falls back to github.token
+            use-input: false
+            env: ""
+            expected: success
+    steps:
+      - run: rustup update stable && rustup default stable
+      - uses: actions/checkout@v4
+      - uses: ./
+        id: install
+        name: Install Xtensa Rust
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ matrix.token.env }}
+        with:
+          # github.token cannot be read in the matrix, only available in steps
+          github-token: ${{ matrix.token.use-input && github.token || '' }}
+          buildtargets: esp32
+          ldproxy: false
+      - name: Check the install outcome
+        run: |
+          echo "outcome: ${{ steps.install.outcome }}, expected: ${{ matrix.token.expected }}"
+          [[ "${{ steps.install.outcome }}" = "${{ matrix.token.expected }}" ]]
+      - if: matrix.token.expected == 'success'
+        run: rustc +esp --print target-list | grep xtensa
 
   check-host-targets:
     name: Check host | ${{ matrix.os }}
