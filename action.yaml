@@ -34,6 +34,12 @@ inputs:
   esp-riscv-gcc:
     description: Install Espressif RISC-V toolchain built with croostool-ng
     default: "false"
+  github-token:
+    description: >-
+      Token used by espup to query the GitHub API. Defaults to the token
+      exposed by the CI platform. On third-party runners (Forgejo, Gitea)
+      that token is not valid for api.github.com, so pass a GitHub PAT here.
+    default: ""
 
 runs:
   using: composite
@@ -72,7 +78,12 @@ runs:
     - name: Install Xtensa toolchain (Linux, macOS)
       if: env.HOST_TARGET != 'x86_64-pc-windows-msvc'
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN || github.token }}
       run: |
+        # espup adds an Authorization header whenever GITHUB_TOKEN is *set*,
+        # even when empty, which yields a 401. Prefer unauthenticated queries.
+        if [[ -z "${GITHUB_TOKEN:-}" ]]; then unset GITHUB_TOKEN; fi
         source "$HOME/.cargo/env"
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
@@ -89,7 +100,10 @@ runs:
     - name: Install Xtensa toolchain (Windows)
       if: env.HOST_TARGET == 'x86_64-pc-windows-msvc'
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN || github.token }}
       run: |
+        if [[ -z "${GITHUB_TOKEN:-}" ]]; then unset GITHUB_TOKEN; fi
         [[ "${{ inputs.version }}" != latest ]] && version="--toolchain-version ${{ inputs.version }}" || version=""
         [[ "${{ inputs.extended-llvm }}" = true ]] && extended_llvm="-e" || extended_llvm=""
         [[ "${{ inputs.name }}" != esp ]] && name="--name ${{ inputs.name }}" || name=""

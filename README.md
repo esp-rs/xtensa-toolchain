@@ -18,11 +18,6 @@ name: CI
 
 on: [push]
 
-# Since `espup` queries the GitHub API, we strongly recommend you provide this
-# action with an API token to avoid transient errors.
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   check:
     name: Rust project
@@ -57,6 +52,7 @@ This action can be configured in various ways using its inputs:
 |    `export`     |               Sources `${ESPUP_EXPORT_FILE}`               |  bool  |         `true`          |
 | `extended-llvm` | Install the whole LLVM instead of only installing the libs |  bool  |         `false`         |
 |     `name`      |                 Xtensa Rust toolchain name                 | string |          _esp_          |
+|  `github-token` |       Token used by `espup` to query the GitHub API        | string |         _empty_         |
 
 All inputs are optional; if no inputs are provided:
 
@@ -68,17 +64,40 @@ All inputs are optional; if no inputs are provided:
 
 ## Environment
 
-This action uses [espup], which calls GitHub API during the installation process. [GitHub API has a low rate limit] for non-authenticated users, and this can lead to transient errors. See [#15] for details.
+This action uses [espup], which calls the GitHub API during the installation process. [GitHub API has a low rate limit] for non-authenticated users, and this can lead to transient errors. See [#15] for details.
 
-So, we recommend [defining] `GITHUB_TOKEN`, as seen in the [example workflow], which increases the rate limit to 1000.
+The token passed to `espup` is the first non-empty value of:
+
+1. the `github-token` input,
+2. the `GITHUB_TOKEN` environment variable visible to the action, whether it comes from the workflow, job or step level, or is injected by the runner itself,
+3. the [github.token] context, i.e. the token GitHub Actions automatically provides to every workflow run.
+
+If all three are empty, `GITHUB_TOKEN` is unset before running `espup`, so the API is queried anonymously rather than with an empty `Authorization` header, which the API rejects with `401 Unauthorized`.
+
+On GitHub Actions, case 3 always applies, so no setup is required: the API queries are authenticated by default.
 
 [espup]: https://github.com/esp-rs/espup
 [GitHub API has a low rate limit]: https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limits-for-requests-from-github-actions
 [#15]: https://github.com/esp-rs/xtensa-toolchain/issues/15
-[defining]: https://docs.github.com/en/actions/learn-github-actions/variables
-[example workflow]: #example-workflow
+[github.token]: https://docs.github.com/en/actions/concepts/security/github_token
 
-## Use with [act]
+### Third-party runners (Forgejo, Gitea)
+
+These runners inject their own `GITHUB_TOKEN`, which overrides any `GITHUB_TOKEN` you set at the workflow or job level.
+Setting it at the step level does take effect for that step, but the injection happens again for every step of a composite action like this one, so it cannot be overridden from the calling workflow.
+That token is not valid for `api.github.com`, so `espup` fails with `401 Unauthorized`.
+Since the injected token is only seen as case 2 above, the `github-token` input is the only way to override it:
+
+```yaml
+- name: Install Rust for Xtensa
+  uses: esp-rs/xtensa-toolchain@v1
+  with:
+    github-token: ${{ secrets.GH_API_TOKEN }}
+    default: true
+    buildtargets: esp32s3
+```
+
+### Use with [act]
 
 [act] is a tool which can be used to run GitHub workflows locally, using Docker. It is possible to use the `xtensa-toolchain` action with [act]; however, due to the fact that [espup] queries the GitHub API, it is necessary to set the `GITHUB_TOKEN` environment variable in order to do so.
 
