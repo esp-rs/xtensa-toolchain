@@ -57,7 +57,10 @@ runs:
       shell: bash
       run: |
         export HOST_TARGET=$(rustup show | grep "Default host" | sed -e 's/.* //')
-        echo "HOST_TARGET=$HOST_TARGET" >> $GITHUB_ENV
+        if [[ "$HOST_TARGET" == "aarch64-pc-windows-msvc" ]]; then
+          HOST_TARGET="x86_64-pc-windows-msvc"
+        fi
+        echo "HOST_TARGET=$HOST_TARGET" >> "$GITHUB_ENV"
 
     - name: Install ldproxy
       if: inputs.ldproxy == 'true'
@@ -109,6 +112,14 @@ runs:
         [[ "${{ inputs.name }}" != esp ]] && name="--name ${{ inputs.name }}" || name=""
         [[ "${{ inputs.esp-riscv-gcc }}" = true ]] && esp_riscv_gcc="-r" || esp_riscv_gcc=""
         "$HOME/.cargo/bin/espup.exe" install -l debug --targets ${{ inputs.buildtargets }} $esp_riscv_gcc $extended_llvm $version $name
+
+    - name: Configure Xtensa Environment (Windows)
+      if: env.HOST_TARGET == 'x86_64-pc-windows-msvc'
+      shell: powershell
+      run: |
+        Get-ChildItem -Path "$HOME\.rustup\toolchains\esp" -Recurse -Filter "xtensa-esp32-elf-gcc.exe" | ForEach-Object {
+          echo $_.DirectoryName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        }
 
     - name: Set default and override
       shell: bash
