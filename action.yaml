@@ -76,7 +76,7 @@ runs:
         echo "ESPUP_EXPORT_FILE=$HOME/exports" >> $GITHUB_ENV
 
     - name: Install Xtensa toolchain (Linux, macOS)
-      if: env.HOST_TARGET != 'x86_64-pc-windows-msvc'
+      if: runner.os != 'Windows'
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN || github.token }}
@@ -98,7 +98,7 @@ runs:
         fi
 
     - name: Install Xtensa toolchain (Windows)
-      if: env.HOST_TARGET == 'x86_64-pc-windows-msvc'
+      if: runner.os == 'Windows'
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN || github.token }}
