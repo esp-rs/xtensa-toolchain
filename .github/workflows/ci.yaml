@@ -36,14 +36,14 @@ jobs:
           override: false
           ldproxy: true
           buildtargets: esp32,esp32c3
-          version: 1.64.0.0
+          version: 1.95.0.0
           extended-llvm: true
           name: xtensa
       - run: rustc +xtensa --print target-list | grep xtensa
       - run: env | grep LIBCLANG_PATH
       - run: xtensa-esp32-elf-gcc --version
       - run: ls $HOME/.cargo/bin/ldproxy | grep ldproxy
-      - run: cargo +xtensa --version | grep 1.64.0
+      - run: cargo +xtensa --version | grep 1.95.0
       - run: rustup default | grep stable
       - run: $CLANG_PATH --version | grep -i espressif
 
